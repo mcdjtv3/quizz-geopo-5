@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz : La Puissance Internationale</title>
+    <style>
+        body {
+            font-family: 'Mayan', sans-serif;
+            margin: 0;
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #333;
+            text-align: center;
+        }
+        .quiz-container, .summary {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            background-image: url('images/back.jpg.webp');
+            background-size: cover;
+            background-position: center;
+        }
+        .question {
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #000;
+        }
+        .choices {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            margin-left: 20%;
+        }
+        .choices li {
+            margin: 8px 0;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #FF0000;
+            color: white;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #CC0000;
+        }
+        .summary {
+            display: none;
+        }
+        .summary ul {
+            list-style: none;
+            padding: 0;
+        }
+        .summary li {
+            text-align: left;
+            margin-left: 20%;
+            margin-bottom: 10px;
+        }
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+        .incorrect {
+            color: red;
+            font-weight: bold;
+        }
+        .score {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .quiz-container, .summary {
+                max-width: 90%;
+                margin: 20px auto;
+                padding: 15px;
+                border-radius: 10px;
+            }
+            button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+        }
+        @media (max-width: 480px) {
+            .quiz-container, .summary {
+                padding: 10px;
+                margin: 10px;
+                border-radius: 10px;
+            }
+            .question {
+                font-size: 16px;
+            }
+            button {
+                font-size: 12px;
+                padding: 6px 12px;
+                border-radius: 10px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .quiz-container, .summary {
+                max-width: 800px;
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container" id="quiz-container">
+    <h2>QCM ENTRAINEMENT - La Puissance Internationale</h2>
+    <div id="question-container">
+        <!-- Les questions seront affichées ici dynamiquement -->
+    </div>
+    <button id="next-button" onclick="nextQuestion()">Suivant</button>
+</div>
+
+<div class="summary" id="summary">
+    <h3>Récapitulatif</h3>
+    <ul id="summary-list">
+        <!-- Le récapitulatif des réponses sera affiché ici -->
+    </ul>
+    <div class="score" id="score"></div>
+    <button onclick="restartQuiz()">Recommencer</button>
+</div>
+
+<script>
+    const quizData = [
+        { question: "Qu’est-ce que la puissance en géopolitique ?", choices: ["Un Etat doté uniquement de ressources naturelles", "Un Etat influent par son poids territorial, économique, démographique, et culturel", "Un Etat qui impose sa volonté par la force militaire uniquement", "Un Etat pacifique qui ne cherche pas à dominer"], correct: 1 },
+        { question: "Comment Raymond Aron définit-il la puissance dans “Paix et Guerre entre les nations” ?", choices: ["La capacité à dominer militairement", "La capacité d’un État à imposer sa volonté aux autres unités politiques", "Le pouvoir économique et industriel", "La possession d’armes nucléaires"], correct: 1 },
+        { question: "Lequel des éléments suivants n’est pas un moyen de puissance traditionnel ?", choices: ["La persuasion", "Le marchandage", "La menace", "L’alliance économique"], correct: 3 },
+        { question: "Comment Joseph Nye qualifie-t-il la nouvelle forme de puissance dans un monde interconnecté ?", choices: ["Hard Power", "Smart Power", "Soft Power", "Diplomatie coercitive"], correct: 2 },
+        { question: "Quels sont les critères définis par Hans Morgenthau pour évaluer la puissance d’un Etat ?", choices: ["Puissance militaire, population, stabilité politique, et alliances stratégiques", "Données géographiques, ressources naturelles, population, état de préparation militaire", "Ressources économiques, influence culturelle, technologie, développement humain", "Capacité industrielle, influence diplomatique, contrôle des médias, qualité de vie"], correct: 1 },
+        { question: "Quelle est la hiérarchie des puissances dans le monde actuel ?", choices: ["Monde bipolaire", "Monde unipolaire", "Monde multipolaire", "Monde polycentrique"], correct: 2 },
+        { question: "Laquelle de ces puissances n’est pas considérée comme une “grande puissance” aujourd’hui ?", choices: ["Chine", "Japon", "Etats-Unis", "Brésil"], correct: 3 },
+        { question: "Pourquoi la Chine n’est-elle pas encore considérée comme une puissance mondiale à part entière ?", choices: ["Elle n’a pas de capacité nucléaire", "Son développement économique est encore trop faible", "Elle manque de stabilité politique", "Le décalage économique est encore trop important par rapport aux autres grandes puissances"], correct: 3 },
+        { question: "Quelle stratégie la Chine adopte-t-elle sur la scène internationale selon son discours officiel ?", choices: ["Expansion militaire agressive", "Stratégie offensive de domination", "Développement pacifique et harmonieux", "Alignement total avec les puissances occidentales"], correct: 2 },
+        { question: "Quelles sont les initiatives qui illustrent le “soft power” chinois ?", choices: ["L’invasion militaire d’autres pays", "Le développement des “routes de la soie”", "Les sanctions économiques contre les pays occidentaux", "Les “Instituts Confucius” et l’organisation des JO"], correct: 3 }
+    ];
+
+    let currentQuestionIndex = 0;
+    let selectedAnswers = [];
+
+    function loadQuestion() {
+        const container = document.getElementById('question-container');
+        container.innerHTML = '';
+
+        const questionData = quizData[currentQuestionIndex];
+        const questionElem = document.createElement('div');
+        questionElem.className = 'question';
+        questionElem.textContent = questionData.question;
+
+        const choicesElem = document.createElement('ul');
+        choicesElem.className = 'choices';
+
+        questionData.choices.forEach((choice, index) => {
+            const choiceElem = document.createElement('li');
+            const choiceInput = document.createElement('input');
+            choiceInput.type = 'radio';
+            choiceInput.name = 'choice';
+            choiceInput.value = index;
+            choiceInput.id = `choice${index}`;
+            
+            const choiceLabel = document.createElement('label');
+            choiceLabel.htmlFor = `choice${index}`;
+            choiceLabel.textContent = choice;
+
+            choiceElem.appendChild(choiceInput);
+            choiceElem.appendChild(choiceLabel);
+            choicesElem.appendChild(choiceElem);
+        });
+
+        container.appendChild(questionElem);
+        container.appendChild(choicesElem);
+    }
+
+    function nextQuestion() {
+        const selectedChoice = document.querySelector('input[name="choice"]:checked');
+        if (!selectedChoice) {
+            alert("Veuillez sélectionner une réponse !");
+            return;
+        }
+
+        selectedAnswers.push(parseInt(selectedChoice.value));
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showSummary();
+        }
+    }
+
+    function showSummary() {
+        document.getElementById('quiz-container').style.display = 'none';
+        const summary = document.getElementById('summary');
+        summary.style.display = 'block';
+
+        const summaryList = document.getElementById('summary-list');
+        summaryList.innerHTML = '';
+
+        let correctAnswers = 0;
+
+        quizData.forEach((q, index) => {
+            const summaryItem = document.createElement('li');
+            summaryItem.innerHTML = `
+                <strong>${q.question}</strong><br>
+                <div style="text-align: left; margin-left: 20%;">
+                    Votre réponse: ${q.choices[selectedAnswers[index]]} - 
+                    ${selectedAnswers[index] === q.correct ? '<span class="correct">Correct</span>' : '<span class="incorrect">Incorrect</span>'}<br>
+                    Bonne réponse: ${q.choices[q.correct]}
+                </div>
+            `;
+            summaryList.appendChild(summaryItem);
+            if (selectedAnswers[index] === q.correct) {
+                correctAnswers++;
+            }
+        });
+
+        document.getElementById('score').textContent = `Score: ${correctAnswers} / ${quizData.length}`;
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        selectedAnswers = [];
+        document.getElementById('summary').style.display = 'none';
+        document.getElementById('quiz-container').style.display = 'block';
+        loadQuestion();
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>
